@@ -1,8 +1,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.WidgetTest1.AppWidget.Container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/Theme.WidgetTest1.AppWidgetContainer">
+
+
+    <TextView
+        android:id="@+id/example_text_widget"
+        android:visibility="gone"
+        tools:visibility = "visible"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_above="@id/example_widget_button"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My Widget" />
 
     <Button
         android:text="Click"
