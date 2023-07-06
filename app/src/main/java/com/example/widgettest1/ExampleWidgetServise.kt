@@ -4,8 +4,11 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import java.text.DateFormat
+import java.util.Date
 
 class ExampleWidgetService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
@@ -20,11 +23,13 @@ class ExampleWidgetService : RemoteViewsService() {
 
         override fun onCreate() {
 
-            SystemClock.sleep(3000)
         }
 
         override fun onDataSetChanged() {
-
+            var date = Date()
+            var stringDate = DateFormat.getTimeInstance(DateFormat.SHORT).format(date)
+            list = arrayListOf("one\n"+stringDate + "two\n"+stringDate + "three\n"+ stringDate)
+            SystemClock.sleep(3000)
         }
 
         override fun onDestroy() {
@@ -38,6 +43,12 @@ class ExampleWidgetService : RemoteViewsService() {
         override fun getViewAt(p0: Int): RemoteViews {
             var views = RemoteViews(context.packageName,R.layout.example_widget_item)
             views.setTextViewText(R.id.example_widget_item_text,list[p0])
+
+
+            var fillIntent = Intent()
+            fillIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId)
+            Log.d("EEE","position = $p0")
+            views.setOnClickFillInIntent(R.id.example_widget_item_text,fillIntent)
             return views
         }
 

@@ -3,13 +3,10 @@ package com.example.widgettest1
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.Color
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.RemoteViews
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.widgettest1.databinding.ActivityExampleAppWidgetConfigBinding
@@ -45,18 +42,29 @@ class ExampleAppWidgetConfig : AppCompatActivity() {
     fun confirmConfiguration(v:View){
         val buttonText = binding.editTextButton.text.toString()
         var appWidgetManager = AppWidgetManager.getInstance(this)
-        var intent = Intent(this,MainActivity::class.java)
-        var pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        var buttonIntent = Intent(this,MainActivity::class.java)
+        var buttonPendingIntent = PendingIntent.getActivity(this, 0, buttonIntent, PendingIntent.FLAG_IMMUTABLE)
 
         var serviceIntent = Intent(this,ExampleWidgetService::class.java)
         serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId)
         serviceIntent.data = Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME))
 
+        var clickIntent = Intent(this,ExampleAppWidgetProvider::class.java)
+        clickIntent.action = "actionToast"
+        var clickPendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            clickIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
         var remoteViews = RemoteViews(this.packageName,R.layout.example_app_widget_provider)
-        remoteViews.setOnClickPendingIntent(R.id.example_widget_button,pendingIntent)
+        remoteViews.setOnClickPendingIntent(R.id.example_widget_button,buttonPendingIntent)
         remoteViews.setCharSequence(R.id.example_widget_button,"setText",buttonText)
         remoteViews.setRemoteAdapter(R.id.example_widget_stack_view,serviceIntent)
         remoteViews.setEmptyView(R.id.example_widget_stack_view,R.id.example_widget_empty_view)
+        remoteViews.setPendingIntentTemplate(R.id.example_widget_stack_view,clickPendingIntent)
 //        remoteViews.setInt(R.id.example_widget_button,"setBackgroundColor",Color.RED)
 
         appWidgetManager.updateAppWidget(appWidgetId,remoteViews)
